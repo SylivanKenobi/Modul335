@@ -2,6 +2,7 @@ package com.game.mosquitokiller.engine;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Handler;
 import android.view.Gravity;
 import android.view.View;
@@ -10,6 +11,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.game.mosquitokiller.Gameover;
+import com.game.mosquitokiller.MainActivity;
 import com.game.mosquitokiller.R;
 
 import java.util.Date;
@@ -89,11 +92,10 @@ public class GameEngine implements View.OnClickListener, Runnable {
     }
 
     private void gameOver() {
-        Dialog dialog = new Dialog(activity, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
-        dialog.setContentView(R.layout.activity_gameover);
-        dialog.show();
         gameRunning = false;
         activity.setResult(points);
+        Dialog dialog = new Gameover(activity, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+        dialog.show();
     }
 
     private void removePills() {
@@ -152,19 +154,15 @@ public class GameEngine implements View.OnClickListener, Runnable {
     }
 
     @Override
-    public void onClick(View pill) {
+    public void onClick(View view) {
         eatenPills++;
         points += 100;
         refreshScreen();
-        playground.removeView(pill);
+        playground.removeView(view);
     }
 
     @Override
     public void run() {
         countDown();
-    }
-
-    public int getPoints() {
-        return points;
     }
 }

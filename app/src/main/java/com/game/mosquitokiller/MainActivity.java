@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         nameinput.setVisibility(View.INVISIBLE);
         startButton = findViewById(R.id.button);
         startButton.setOnClickListener(this);
-        resetHighscore();
+//        resetHighscore();
     }
 
 
