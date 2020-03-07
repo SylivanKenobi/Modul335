@@ -6,20 +6,36 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.net.ssl.HttpsURLConnection;
+
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, Html.ImageGetter {
+
+    private static final String BASE_URL = "";
     private Button startButton;
     private LinearLayout nameinput;
     private Button save;
     private int score;
+    private String highscoresHtml = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +55,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         showHighscore();
+        internetHighscores("",0);
     }
 
     private int readHighscore() {
         SharedPreferences sharedPreferences = getSharedPreferences("GAME", 0);
         return sharedPreferences.getInt("HIGHSCORE", 0);
+    }
+
+    private void internetHighscores(final String name, final int points) {
+        (new Thread(() -> {
+            try {
+                URL url = new URL(BASE_URL + "&name=" + URLEncoder.encode(name, "utf-8") + "&points=" + points + "&max=100");
+                HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+                InputStreamReader inputReader = new InputStreamReader(connection.getInputStream(), "UTF8");
+                BufferedReader reader = new BufferedReader(inputReader, 2000);
+                List<String> highscoreList = new ArrayList<>();
+                String line;
+                do {
+                    line = reader.readLine();
+                    highscoreList.add(line);
+                } while (line != null);
+                for (String s : highscoreList) {
+                    highscoresHtml += "<b>" + s.replace(",", "<b> <font color='red'></font><br>");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                highscoresHtml = "Wrong: " + e.getMessage();
+            }
+            runOnUiThread(() -> {
+                TextView tv = findViewById(R.id.highscore);
+                tv.setText(Html.fromHtml(highscoresHtml, this, null));
+            });
+        })).start();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -53,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivityForResult(new Intent(this, GameActivity.class), 1, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         } else if (v.getId() == R.id.button2) {
             writeScore();
+            internetHighscores(readHighscoreName(), readHighscore());
             nameinput.setVisibility(View.INVISIBLE);
         }
     }
@@ -95,5 +140,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editor.putString("HIGHSCORE_NAME", "");
         editor.commit();
         showHighscore();
+    }
+
+    @Override
+    public Drawable getDrawable(String source) {
+        return null;
     }
 }
