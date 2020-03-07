@@ -93,6 +93,7 @@ public class GameEngine implements View.OnClickListener, Runnable {
         dialog.setContentView(R.layout.activity_gameover);
         dialog.show();
         gameRunning = false;
+        activity.setResult(points);
     }
 
     private void removePills() {

@@ -9,6 +9,8 @@ import com.game.mosquitokiller.engine.GameEngine;
 
 public class GameActivity extends AppCompatActivity {
 
+    GameEngine engine;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,10 +23,7 @@ public class GameActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
-
-        GameEngine engine = new GameEngine(this);
+        engine = new GameEngine(this);
         engine.startRound();
-        setResult(engine.getPoints());
     }
-
 }
