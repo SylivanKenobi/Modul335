@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Pillkiller</string>
+    <string name="startButton">Start</string>
+    <string name="helloText">Go Junkie Go</string>
+    <string name="filler" />
+    <string name="points">Points</string>
+    <string name="round">Round</string>
+    <string name="hits">Hits</string>
+    <string name="time">Time</string>
+    <string name="gameover">Game Over</string>
+    <string name="Home" />
+    <string name="home">Home</string>
+    <string name="highscore">Highscore:</string>
+    <string name="score">score</string>
+</resources>
